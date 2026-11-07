@@ -6,6 +6,95 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Adult Income Prediction", layout="wide")
 
+# ---- Custom CSS ----
+st.markdown("""
+<style>
+
+/* Ukuran teks dasar */
+html {
+    font-size: 16px !important;
+}
+
+[data-testid="stAppViewContainer"] {
+    font-size: 16px !important;
+}
+
+/* Judul halaman */
+h1 {
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+}
+
+h2 {
+    font-size: 1.7rem !important;
+    font-weight: 650 !important;
+}
+
+h3 {
+    font-size: 1.35rem !important;
+    font-weight: 600 !important;
+}
+
+/* Teks paragraf */
+[data-testid="stMarkdownContainer"] p {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    font-size: 16px !important;
+}
+
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label {
+    font-size: 1rem !important;
+}
+
+/* Metric */
+[data-testid="stMetricLabel"] {
+    font-size: 1rem !important;
+}
+
+[data-testid="stMetricValue"] {
+    font-size: 2.2rem !important;
+    font-weight: 600 !important;
+}
+
+/* Caption */
+[data-testid="stCaptionContainer"] {
+    font-size: 0.85rem !important;
+}
+
+/* Tombol */
+.stButton button {
+    font-size: 1rem !important;
+    padding: 0.5rem 1.2rem !important;
+}
+
+/* Input */
+.stSelectbox label,
+.stSlider label,
+.stNumberInput label,
+.stFileUploader label {
+    font-size: 1rem !important;
+}
+
+/* Tab */
+[data-testid="stTab"] {
+    font-size: 1rem !important;
+}
+
+/* Tabel */
+[data-testid="stDataFrame"] {
+    font-size: 0.95rem !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+
 REPO_URL = "https://github.com/wulanlumbantoruan/Capstone-Project-PSD"
 FITUR_WAJIB = ['education.num', 'age', 'hours.per.week', 'capital.gain', 'sex', 'relationship']
 
@@ -38,45 +127,6 @@ mappings = artifact['mappings']
 features = artifact['features']
 threshold = artifact['threshold']
 ev = load_eval()
-
-
-def page_home():
-    st.title("Capstone Project - Kelompok 6 PSD")
-    st.header("Adult Income Prediction")
-    st.markdown(f"**GitHub:** [{REPO_URL}]({REPO_URL})")
-
-    st.subheader("Informasi dataset")
-    st.write("Dataset Adult Census Income berisi data sensus penduduk Amerika Serikat tahun 1994. "
-             "Tujuannya memprediksi apakah pendapatan tahunan seseorang **di atas 50K USD (>50K)** "
-             "atau **tidak (<=50K)** berdasarkan atribut demografi dan pekerjaan.")
-
-    df = load_dataset()
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("Jumlah data", f"{len(df):,}")
-    c2.metric("Jumlah fitur", df.shape[1] - 1)
-    c3.metric("Jumlah kelas", df['income'].nunique())
-    c4.metric("Fitur dipakai model", len(FITUR_WAJIB))
-    st.caption("Setelah 24 data duplikat dihapus, 32.537 data digunakan: 26.029 data latih dan "
-               "6.508 data uji (rasio 80:20).")
-
-    st.write("Jumlah data per kelas:")
-    st.bar_chart(df['income'].value_counts())
-
-    st.subheader("Algoritma yang digunakan")
-    st.write("Empat algoritma dibandingkan: **Logistic Regression**, **Decision Tree**, "
-             "**Random Forest**, dan **MLP (Neural Network)**, masing-masing dengan hyperparameter tuning. "
-             "Model terbaik yang dipakai pada aplikasi ini adalah **Random Forest**.")
-
-    st.subheader("Ringkasan performa model (Random Forest)")
-    rf = ev['models']['Random Forest']
-    t = rf['at_threshold']
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("AUC-ROC", f"{rf['auc']:.3f}")
-    m2.metric("Akurasi", f"{t['accuracy']:.3f}")
-    m3.metric("Recall (>50K)", f"{t['recall']:.3f}")
-    m4.metric("F1-score (>50K)", f"{t['f1']:.3f}")
-    st.caption(f"Dihitung pada data uji dengan threshold terbaik {rf['threshold']:.3f}. "
-               "Detail perbandingan semua model ada di halaman Model Evaluation.")
 
 
 def page_home():
